@@ -1,3 +1,15 @@
+- name: Reboot the instance
+  reboot:
+    reboot_timeout: 600
+  become: True
+
+- name: Wait for the instance to be reachable
+  wait_for_connection:
+    timeout: 300
+
+- name: Gather facts
+  ansible.builtin.setup:
+
 - name: Check for trafficgen repo
   stat:
     path: "{{ trafficgen_dir }}"
