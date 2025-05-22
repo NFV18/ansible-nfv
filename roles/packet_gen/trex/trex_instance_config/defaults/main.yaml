@@ -8,13 +8,20 @@ trex_conf_file: '/etc/trex_cfg.yaml'
 clone_traffic_gen_repo: True
 
 # Trafficgen repo URI
-trafficgen_repo: 'https://github.com/atheurer/trafficgen'
+trafficgen_repo: 'https://github.com/perftool-incubator/bench-trafficgen'
 
 # Trafficgen branch
-trafficgen_branch: 'master'
+trafficgen_branch: 'main'
 
-# Derecitory where trafficgen repo will be cloned to
-trafficgen_dir: '/opt/trafficgen/'
+# Directory where trafficgen repo will be cloned to
+# We have to differentiate between `trafficgen_clone_dir` and `trafficgen_dir`
+# of binary_search role (which uses this clone) because it could happens (and
+# actually happens) that the actual clone directory of trafficgen for
+# https://github.com/perftool-incubator/bench-trafficgen is
+# `/opt/bench-trafficgen/trafficgen` instead of `/opt/bench-trafficgen` so
+# `trafficgen_dir` in binary_search role must be set to
+# `/opt/bench-trafficgen/trafficgen`
+trafficgen_clone_dir: '/opt/bench-trafficgen'
 
 # Platform sepcific Trex configuration
 trex_platform:

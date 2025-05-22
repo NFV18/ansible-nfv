@@ -93,6 +93,37 @@
     - name: Parse DuT Destination Macs
       set_fact:
         dut_macs: "{{ dut_ports | map(attribute='mac_address') | reject('search', kernel_nics['stdout']) | list | join(',') }}"
+      when: not routed_traffic
+
+    - name: Query Router Ports
+      import_role:
+        name: roles/post_install/discover_router_ports
+      vars:
+        query_instance: "{{ ansible_hostname }}"
+      delegate_to: "{{ groups['undercloud'] | first }}"
+      when: routed_traffic
+
+    - name: Map DuT NICs to Router NICs
+      set_fact:
+        router_mac: |-
+          {% for router_port in discovered_routers_ports.results | map(attribute='ports') | list | flatten %}
+          {% for fixed_ip in router_port['fixed_ips'] %}
+          {% if fixed_ip['subnet_id'] in item['fixed_ips'] | map(attribute='subnet_id') | list %}
+          {{ router_port['mac_address'] }}
+          {% endif %}
+          {% endfor %}
+          {% endfor %}
+      loop: "{{ dut_ports }}"
+      when:
+        - routed_traffic
+        - not item['mac_address'] in kernel_nics['stdout']
+      register: dut_ports_helper
+
+    - name: Parse DuT Peer Destination Macs
+      set_fact:
+        dut_macs: "{{ dut_ports_helper.results | rejectattr('skipped', 'defined') | map(attribute='ansible_facts') | map(attribute='router_mac') | list | join(',') }}"
+      when: routed_traffic
+
   when:
     - dut_mac is not defined
     - discover_dut_macs | default(False)

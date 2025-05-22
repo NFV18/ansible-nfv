@@ -2,7 +2,7 @@
 binary_perf_log: '/tmp/performance.log'
 
 # Trafficgen repo directory on host
-trafficgen_dir: '/opt/trafficgen'
+trafficgen_dir: '/opt/bench-trafficgen/trafficgen'
 
 # binary-search binary
 binary_search_bin: "{{ trafficgen_dir }}/binary-search.py"
