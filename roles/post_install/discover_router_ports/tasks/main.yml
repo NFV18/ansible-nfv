@@ -1,0 +1,21 @@
+---
+
+- name: Gather Router Facts From OpenStack API
+  vars:
+    ansible_python_interpreter: "{{ python_interperter | default(venv_path + '/bin/python') }}"
+  openstack.cloud.routers_info:
+    cloud: "{{ query_cloud }}"
+    validate_certs: "{{ cloud_validate_certs }}"
+  register: discovered_routers
+  failed_when: discovered_routers['routers'] == []
+
+- name: Get all Routers Ports
+  vars:
+    ansible_python_interpreter: "{{ python_interperter | default(venv_path + '/bin/python') }}"
+  openstack.cloud.port_info:
+    cloud: "{{ query_cloud }}"
+    validate_certs: "{{ cloud_validate_certs }}"
+    filters:
+      device_id: "{{ item['id'] }}"
+  loop: "{{ discovered_routers['routers'] }}"
+  register: discovered_routers_ports
