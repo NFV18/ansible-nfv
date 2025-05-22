@@ -1,3 +1,12 @@
+- name: Enable DUT IP forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    state: present
+    sysctl_set: true
+  when: packet_gen_ip_forwarding
+  become: true
+
 - name: Check If Tmux Sessions Are Running
   shell: "tmux list-sessions -F '#S'"
   register: tmux_sessions
@@ -13,6 +22,13 @@
   when:
     - hostvars[(groups[trex_host | default('trex') ] | first) ]['trex_instance_nics_info'] is defined
     - trex_macs is not defined
+
+- name: Parse Router MACs
+  set_fact:
+    trex_macs: "{{ hostvars[groups[dut_group][0]]['dut_macs'] }}"
+  when:
+    - trex_macs is not defined
+    - hostvars[groups[dut_group][0]]['dut_macs'] is defined
 
 - name: Set testpmd verbosity
   copy:

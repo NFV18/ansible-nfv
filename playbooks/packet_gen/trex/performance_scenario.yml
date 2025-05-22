@@ -137,6 +137,7 @@
   roles:
     - role: roles/packet_gen/trex/bind_dpdk_nics
       vars:
+        discover_dut_macs: "{{ packet_gen_routed_traffic | default(False) }}"
         dpdk_binding_driver: "{{ trex_dpdk_binding_driver | default('vfio-pci') }}"
       when: bind_dpdk_nics | default(True)|bool
 

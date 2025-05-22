@@ -8,3 +8,8 @@ hugepages_count: 4
 
 # dpdk drivers to use: vfio-pci, mlx5_core
 dpdk_binding_driver: 'vfio-pci'
+
+# Set to True if profile traffic needs to cross router boundaries, this will
+# the destination MAC addresses of outgoing traffic from DUT and TREX to be set
+# to the MAC addresses of their corresponding gateways
+packet_gen_routed_traffic: False
