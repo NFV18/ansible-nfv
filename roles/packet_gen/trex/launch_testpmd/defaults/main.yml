@@ -33,3 +33,6 @@ testpmd_verbose: 0
 
 # TestPMD log file
 testpmd_log: "/tmp/testpmd.log"
+
+# Enable IP forwarding in case L3 needed
+packet_gen_ip_forwarding: false

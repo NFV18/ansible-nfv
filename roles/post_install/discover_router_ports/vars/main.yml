@@ -1,0 +1,10 @@
+# query_instance - Instance to be queried via OpenStack APIs, mandatory
+
+# Virtual environment path
+venv_path: "/tmp/ansible_venv"
+
+# Name of cloud to be queried
+query_cloud: "default"
+
+# Validate HTTPS certs when querying cloud
+cloud_validate_certs: False
