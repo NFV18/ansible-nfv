@@ -1,4 +1,4 @@
-- name: Fetch image from URL
+#- name: Fetch image from URL
   get_url:
     url: "{{ guest_image | mandatory }}"
     dest: "{{ guest_image_output }}"
