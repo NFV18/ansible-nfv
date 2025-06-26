@@ -1,5 +1,5 @@
 <testsuite name="performance" tests="1" report_junitxml_failures="{{ report_junitxml_failures }}" report_junitxml_errors="{{ report_junitxml_errors }}" skipped="0" time="{{ time | default('1') }}">
-    <testcase classname="performance" name="{{ dut_type }}" time="1">
+    <testcase classname="nfv.performance" name="{{ dut_type }}" time="1">
         {% if report_junitxml_perf_result_status == 'failed' %}
         <failure type="low_performance">performance are lower then expected. Expected: {{ report_junitxml_perf_result_threshold }}, Got: {{ perf_results.stdout | int }}</failure>
         {% endif %}
