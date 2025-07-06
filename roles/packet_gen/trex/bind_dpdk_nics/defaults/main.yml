@@ -8,3 +8,6 @@ hugepages_count: 4
 
 # dpdk drivers to use: vfio-pci, mlx5_core
 dpdk_binding_driver: 'vfio-pci'
+
+# TODO: set False by default
+routed_traffic: True
