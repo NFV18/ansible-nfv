@@ -102,6 +102,13 @@ Launch TestPMD on DuT instance:
 launch_testpmd: True
 ```
 
+Launch Grout on DuT instance:
+
+`False` by default
+```
+launch_grout: False
+```
+
 Execute binary_search script on trex instance:
 
 `True` by default

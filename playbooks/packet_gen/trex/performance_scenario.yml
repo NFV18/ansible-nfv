@@ -87,7 +87,15 @@
     - role: roles/packet_gen/trex/launch_testpmd
       vars:
         trex_host: "{{ trex_instances[ dut_group ] | default('trex') }}"
-      when: launch_testpmd | default(True)|bool
+      when:
+        - launch_testpmd | default(True)|bool
+        - not launch_grout | default(False)|bool
+
+- hosts: "{{ dut_group | default(omit) }}"
+  become: true
+  roles:
+    - role: roles/packet_gen/trex/launch_grout
+      when: launch_grout | default(False)|bool
 
 - hosts: "{{ trex_instances[ dut_group ] | default('trex') }}"
   become: true
