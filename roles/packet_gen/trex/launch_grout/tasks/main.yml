@@ -1,0 +1,20 @@
+- name: Ensure grout RPM is installed
+  ansible.builtin.dnf:
+    name: '{{ grout_rpm }}'
+    state: present
+    disable_gpg_check: true
+
+- name: Update grout.init
+  ansible.builtin.copy:
+    remote_src: yes
+    src: '{{ grout_config }}'
+    dest: /etc/grout.init
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Enable and start grout.service
+  ansible.builtin.systemd:
+    name: grout.service
+    enabled: true
+    state: restarted

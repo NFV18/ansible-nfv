@@ -1,0 +1,3 @@
+grout_rpm: https://github.com/DPDK/grout/releases/download/edge/grout.x86_64.rpm
+grout_config: /etc/grout_config
+

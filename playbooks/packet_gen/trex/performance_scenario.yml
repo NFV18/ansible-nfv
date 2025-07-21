@@ -76,6 +76,43 @@
         delay: 5
       when: osp_reboot | default(False)|bool
 
+- hosts: "{{ router_group | default(omit) }}"
+  become: true
+  roles:
+    - role: tuning/cpu_pinning_huge_pages
+      vars:
+        cpu_pinning_cores: "{{ router_lcores }}"
+        ssh_reboot: "{{ not osp_reboot | default(False)|bool }}"
+
+- hosts: localhost
+  gather_facts: False
+  tasks:
+    - block:
+        - name: get router vm name
+          set_fact:
+            router_vm: "{{ item.name }}"
+          when: "'router' in item['group']"
+          loop: "{{ dynamic_instances }}"
+
+        - name: Reboot router vm
+          openstack.cloud.server_action:
+            cloud: "{{ cloud_name | default('overcloud') }}"
+            action: reboot_soft
+            server: "{{ router_vm }}"
+            timeout: 300
+
+      when: osp_reboot | default(False)|bool
+
+- hosts: "{{ router_group | default(omit) }}"
+  gather_facts: False
+  become: true
+  tasks:
+    - name: Wait for server to restart successfully
+      wait_for_connection:
+        timeout: 300
+        delay: 5
+      when: osp_reboot | default(False)|bool
+
 - hosts: "{{ dut_group | default(omit) }}"
   roles:
     - role: roles/packet_gen/trex/bind_dpdk_nics
@@ -87,7 +124,29 @@
     - role: roles/packet_gen/trex/launch_testpmd
       vars:
         trex_host: "{{ trex_instances[ dut_group ] | default('trex') }}"
-      when: launch_testpmd | default(True)|bool
+      when:
+        - launch_testpmd | default(True)|bool
+        - not launch_grout | default(False)|bool
+
+- hosts: "{{ dut_group | default(omit) }}"
+  become: true
+  roles:
+    - role: roles/packet_gen/trex/launch_grout
+      when: launch_grout | default(False)|bool
+
+- hosts: "{{ router_group | default(omit) }}"
+  roles:
+    - role: roles/packet_gen/trex/bind_dpdk_nics
+      vars:
+        discover_dut_macs: True
+        dpdk_binding_driver: 'vfio-pci'
+      when: launch_grout | default(False)|bool
+
+- hosts: "{{ router_group | default(omit) }}"
+  become: true
+  roles:
+    - role: roles/packet_gen/trex/launch_grout
+      when: launch_grout | default(False)|bool
 
 - hosts: "{{ trex_instances[ dut_group ] | default('trex') }}"
   become: true
