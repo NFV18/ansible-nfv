@@ -227,6 +227,7 @@
   lineinfile:
     path: "{{ binary_perf_log }}"
     line: "Puddle: {{ deployment_core_puddle['content'] | b64decode }}"
+  when: deployment_core_puddle is not skipped
   delegate_to: "{{ groups['undercloud'] | first }}"
 
 - name: Append extra OVN version to log
