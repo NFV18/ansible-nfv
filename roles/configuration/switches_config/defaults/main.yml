@@ -1,3 +1,0 @@
-# Amount of retries to supported tasks
-task_retries: 3
-task_retry_delay: 900
